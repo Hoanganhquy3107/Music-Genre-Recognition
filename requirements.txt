@@ -21,3 +21,4 @@ soundfile==0.12.1
 opencv-python==4.7.0.72
 nltk==3.8.1
 supabase-py==1.0.3
+bcrypt==4.0.1
