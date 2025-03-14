@@ -213,8 +213,8 @@ st.markdown(
 
 # Tạo menu Sidebar có icon
 with st.sidebar:
-    st.image("https://media.giphy.com/media/xThtapIXXGuYEnqNgU/giphy.gif", use_container_width=True)
-
+    st.image("D:/test/Music-Genre-Recognition-main/.image/a-minimalist-logo-design-on-a-black-back_0AWYUQ3rQfy5rgcfFzPdJQ_5N7Moh5lTRa_PQanVq-UkQ.jpeg", use_container_width=True)
+  
     menu = option_menu(
         menu_title="Navigation",
         options=["Home", "Create Lyrics", "Feel The Beat", "Classify", "Explore", "Library", "Search"],
