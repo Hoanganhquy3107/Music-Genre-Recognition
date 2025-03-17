@@ -53,20 +53,25 @@ def is_valid_email(email):
 
 # Giao diện trang đăng nhập
 def login_page():
-    st.title("🔑 Đăng Nhập")
+ st.title("🔑 Đăng Nhập")
     email = st.text_input("📧 Email", placeholder="Nhập email của bạn")
     password = st.text_input("🔒 Mật khẩu", type="password", placeholder="Nhập mật khẩu")
 
     if st.button("🚀 Đăng Nhập"):
-            try:
-                user = supabase.auth.sign_in_with_password({"email": email, "password": password})
+        try:
+            user = supabase.auth.sign_in_with_password({"email": email, "password": password})
+            
+            # ✅ Kiểm tra dữ liệu trước khi lưu session
+            if user and "user" in user and "email" in user["user"]:
                 st.session_state.user = user
-                st.success("✅ Đăng nhập thành công!")
+                st.success(f"✅ Đăng nhập thành công với email: {user['user']['email']}")
                 st.experimental_rerun()
-            except Exception as e:
-                st.error(f"❌ Lỗi: {e}")
+            else:
+                st.error("❌ Lỗi: Không thể lấy thông tin tài khoản. Vui lòng thử lại!")
 
-
+        except Exception as e:
+            st.error(f"❌ Lỗi đăng nhập: {str(e)}")
+            
     st.markdown("---")
     st.markdown("🔹 **Chưa có tài khoản?** [Đăng ký ngay](#)")
     st.markdown("🔹 **Quên mật khẩu?** [Lấy lại mật khẩu](#)")
@@ -105,15 +110,20 @@ def reset_password_page():
 # Giao diện trang chính sau khi đăng nhập
 def main_page():
     st.title("🎉 Chào mừng bạn!")
-    st.success(f"✅ Bạn đã đăng nhập với email: {st.session_state.user['user']['email']}")
-    
+
+    # ✅ Kiểm tra dữ liệu trước khi truy cập email
+    if "user" in st.session_state and st.session_state.user and "user" in st.session_state.user and "email" in st.session_state.user["user"]:
+        st.success(f"✅ Bạn đã đăng nhập với email: {st.session_state.user['user']['email']}")
+    else:
+        st.error("❌ Lỗi: Không thể lấy thông tin tài khoản. Vui lòng đăng nhập lại!")
+        st.stop()  # 🔴 Dừng chạy tiếp nếu không có thông tin user hợp lệ
+
     if st.button("🚪 Đăng xuất"):
         supabase.auth.sign_out()
         st.session_state.user = None
         st.experimental_rerun()
-
 # Điều hướng giữa các trang
-if st.session_state.user:
+if "user" in st.session_state and st.session_state.user and "user" in st.session_state.user and "email" in st.session_state.user["user"]:
     main_page()
 else:
     option = st.sidebar.radio("🔹 Chọn chức năng", ["🔑 Đăng Nhập", "📝 Đăng Ký", "🔄 Quên Mật Khẩu"])
