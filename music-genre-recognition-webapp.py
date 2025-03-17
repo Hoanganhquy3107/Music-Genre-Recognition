@@ -53,7 +53,8 @@ def is_valid_email(email):
 
 # Giao diện trang đăng nhập
 def login_page():
- st.title("🔑 Đăng Nhập")
+    st.title("🔑 Đăng Nhập")
+
     email = st.text_input("📧 Email", placeholder="Nhập email của bạn")
     password = st.text_input("🔒 Mật khẩu", type="password", placeholder="Nhập mật khẩu")
 
@@ -71,6 +72,7 @@ def login_page():
 
         except Exception as e:
             st.error(f"❌ Lỗi đăng nhập: {str(e)}")
+
             
     st.markdown("---")
     st.markdown("🔹 **Chưa có tài khoản?** [Đăng ký ngay](#)")
