@@ -372,69 +372,78 @@ if menu == "Feel The Beat":
     st.title("🎵 Feel The Beat - Tạo Nhạc AI")
 
     # Nhập API Token
-    api_token = st.text_input("🔑 Nhập API Token:", type="password")
-
+    api_token = "2d551602f3a39d8f3e219db2c94d7659"
+    custom_mode = st.toggle("Custom Mode", value=True)
     # Nhập mô tả nhạc cần tạo
-    prompt = st.text_area("💡 Nhập mô tả bản nhạc bạn muốn tạo:", 
-    placeholder="Một bản nhạc piano thư giãn với giai điệu nhẹ nhàng...")
+    prompt = st.text_area("💡 Enter a description of the track you want to create:", 
+    placeholder="A relaxing piano piece with a gentle melody...")
+    if custom_mode == True:
+        # Danh sách gợi ý phong cách nhạc
+        music_styles = ["Classical", "Jazz", "Lo-fi", "Ambient", "Rock"]
 
-    # Danh sách gợi ý phong cách nhạc
-    music_styles = ["Classical", "Jazz", "Lo-fi", "Ambient", "Rock"]
+        # Nếu chưa có session_state cho style_list, đặt giá trị mặc định
+        if "style_list" not in st.session_state:
+            st.session_state["style_list"] = []
 
-    # Nếu chưa có session_state cho style_list, đặt giá trị mặc định
-    if "style_list" not in st.session_state:
-        st.session_state["style_list"] = []
+        # Hộp nhập phong cách nhạc (hiển thị danh sách dưới dạng chuỗi)
+        style = st.text_input("🎼 Enter music style:", ", ".join(st.session_state["style_list"]))
 
-    # Hộp nhập phong cách nhạc (hiển thị danh sách dưới dạng chuỗi)
-    style = st.text_input("🎼 Nhập phong cách nhạc:", ", ".join(st.session_state["style_list"]))
+        # Hiển thị các nút theo hàng ngang
+        cols = st.columns(len(music_styles))
 
-    # Hiển thị các nút theo hàng ngang
-    cols = st.columns(len(music_styles))
+        for i, music in enumerate(music_styles):
+            with cols[i]:
+                if st.button(music, use_container_width=True):
+                    if music in st.session_state["style_list"]:
+                        # Nếu đã có trong danh sách thì xóa đi (bỏ chọn)
+                        st.session_state["style_list"].remove(music)
+                    else:
+                        # Nếu chưa có thì thêm vào danh sách
+                        st.session_state["style_list"].append(music)
+                    
+                    # Cập nhật text box với danh sách mới
+                    st.rerun()  # Cập nhật giao diện ngay lập tức
 
-    for i, music in enumerate(music_styles):
-        with cols[i]:
-            if st.button(music, use_container_width=True):
-                if music in st.session_state["style_list"]:
-                    # Nếu đã có trong danh sách thì xóa đi (bỏ chọn)
-                    st.session_state["style_list"].remove(music)
-                else:
-                    # Nếu chưa có thì thêm vào danh sách
-                    st.session_state["style_list"].append(music)
-                
-                # Cập nhật text box với danh sách mới
-                st.rerun()  # Cập nhật giao diện ngay lập tức
-
-    title = st.text_input("🎶 Đặt tên bản nhạc:", "My AI Music")
-    instrumental = st.checkbox("🎻 Nhạc không lời?", value=False)
+        title = st.text_input("🎶 Name the song:", "My AI Music")
+    instrumental = st.checkbox("🎻 Instrumental", value=False)
 
     # Xử lý khi bấm nút
     if st.button("🎧 Feel The Beat"):
         if not api_token or not prompt:
-            st.warning("⚠️ Vui lòng nhập API Token và mô tả nhạc!")
+            st.warning("⚠️Please enter music description!")
         else:
             # Gửi yêu cầu API tạo nhạc
             api_url = "https://apibox.erweima.ai/api/v1/generate"
             headers = {"Authorization": f"Bearer {api_token}", "Content-Type": "application/json"}
-            data = {
-                "prompt": prompt,
-                "style": style,
-                "title": title,
-                "customMode": True,
-                "instrumental": instrumental,
-                "model": "V3_5",
-                "callBackUrl": "https://api.example.com/callback"
-            }
+            if custom_mode == True:
+                data = {
+                    "prompt": prompt,
+                    "style": style,
+                    "title": title,
+                    "customMode": custom_mode,
+                    "instrumental": instrumental,
+                    "model": "V3_5",
+                    "callBackUrl": "https://api.example.com/callback"
+                }
+            else:
+                data = {
+                    "prompt": prompt,
+                    "customMode": custom_mode,
+                    "instrumental": instrumental,
+                    "model": "V3_5",
+                    "callBackUrl": "https://api.example.com/callback"
+                }
 
             with st.spinner("🎼 Đang tạo nhạc..."):
                 response = requests.post(api_url, json=data, headers=headers)
-
+       
             # Xử lý kết quả
             if response.status_code == 200:
                 task_id = response.json().get("data", {}).get("taskId", None)
-                st.write("📌 Task ID:", task_id)  # Debug Task ID
+                #st.write("📌 Task ID:", task_id)  # Debug Task ID
 
                 if not task_id:
-                    st.error("🚨 API không trả về Task ID!")
+                    st.error("🚨No music yet")
                 else:
                     check_url = f"https://apibox.erweima.ai/api/v1/generate/record-info?taskId={task_id}"
                     headers = {
@@ -442,7 +451,7 @@ if menu == "Feel The Beat":
                         "Accept": "application/json"
                     }
 
-                    st.write("nhạc đang tạo vui lòng chờ 5 phút")
+                    st.write("Music is being created please wait 5 minutes")
                     game_html = """
                     <iframe src="https://chromedino.com/color/" frameborder="0" scrolling="no" width="100%" height="100%" loading="lazy"></iframe>
                         <div style="
@@ -464,7 +473,7 @@ if menu == "Feel The Beat":
                             text-align: center; /* Căn giữa chữ */
                         ">
                         <div>
-                        🔥 Chào mừng đến với T-Rex Game! 🔥
+                        🔥 Survive until the music is over 🔥
                         </div>
                         <p style="
                             font-size: 16px; /* Nhỏ hơn tiêu đề */
@@ -487,7 +496,7 @@ if menu == "Feel The Beat":
                     """
                     st.components.v1.html(game_html, height=320)
                     audio_url = None
-
+   
                     for _ in range(60):  # Lặp tối đa 60 lần (5 phút)
                         check_response = requests.get(check_url, headers=headers)
 
@@ -505,6 +514,10 @@ if menu == "Feel The Beat":
                                         audio_url = suno_data[0].get("audioUrl")
                                         img_url = suno_data[0].get("imageUrl",)
                                         title_data = suno_data[0].get("title")
+                                        audio_url2 = suno_data[1].get("audioUrl")
+                                        img_url2 = suno_data[1].get("imageUrl",)
+                                        title_data2 = suno_data[1].get("title")
+                                        
                                 if audio_url:
                                     break  # Dừng vòng lặp nếu đã có nhạc
 
@@ -513,14 +526,10 @@ if menu == "Feel The Beat":
                                 st.write("📄 Nội dung API trả về:", check_response.text)
                                 break  # Nếu lỗi, dừng luôn
                         time.sleep(5)  # Chờ 5 giây trước khi kiểm tra lại
-
-                    # Kiểm tra kết quả sau vòng lặp
-                    if audio_url:
-                        status = st.empty()
-                        st.success(f"🎵 Nhạc đã sẵn sàng: [{title}]({audio_url})")
-                        image = img_url
-                        title = title_data  # Thay bằng tiêu đề bài hát
-                        # Thiết kế giao diện phát nhạc đẹp
+                    def render_music_player(title, audio_url, image_url):
+                        """
+                        Displays the music player interface with title, cover art and music player.
+                        """
                         st.markdown(
                             """
                             <style>
@@ -535,29 +544,29 @@ if menu == "Feel The Beat":
                                     border-radius: 30px;
                                     box-shadow: 0px 0px 15px #feb47b;
                                 }
-
-                                /* Tùy chỉnh thanh tiến trình */
                                 audio::-webkit-media-controls-timeline {
                                     background: linear-gradient(90deg, #ff7e5f, #feb47b) !important;
                                     border-radius: 30px;
                                     height: 6px;
                                     box-shadow: 0px 0px 10px rgba(255, 126, 95, 0.8);
                                     transition: all 0.3s ease-in-out;
-                                    padding:1px;
+                                    padding: 1px;
                                 }
-                                
-                                /* Chỉnh màu nút Play/Pause */
                                 audio::-webkit-media-controls-play-button {
                                     background-color: #ff7e5f !important;
                                     box-shadow: 0px 0px 10px rgba(255, 126, 95, 0.8);
                                     border-radius: 50%;
                                 }
-
                                 audio::-webkit-media-controls-volume-slider {
-                                    background: #ff7e5f !important;
+                                    background: linear-gradient(90deg, #ff7e5f, #feb47b) !important;
+                                    border-radius: 30px;
+                                    height: 6px;
+                                    box-shadow: 0px 0px 10px rgba(255, 126, 95, 0.8);
+                                    transition: all 0.3s ease-in-out;
+                                    margin-top: 11px;
+                                    padding-top:1px;
+                                    padding-bottom:1px;
                                 }
-
-                                /* Thiết kế tiêu đề bài hát */
                                 .song-title {
                                     font-size: 20px;
                                     font-weight: bold;
@@ -570,19 +579,28 @@ if menu == "Feel The Beat":
                             """,
                             unsafe_allow_html=True,
                         )
-                        col1, col2 = st.columns([1, 5])  # Cột trái (1 phần), cột phải (2 phần)
+                        
+                        col1, col2 = st.columns([1, 5])
                         with col1:
-                        # Chèn hình ảnh bài hát
-                            st.image(image, width=150)
+                            st.image(image_url, width=150)
                         with col2:
-                            # Hiển thị tiêu đề bài hát
                             st.markdown(f'<div class="song-title">{title}</div>', unsafe_allow_html=True)
-                            
-                            # Hiển thị trình phát nhạc
                             st.markdown('<div class="audio-container">', unsafe_allow_html=True)
                             st.audio(audio_url, format="audio/mp3")
                             st.markdown('</div>', unsafe_allow_html=True)
-                    else:
-                        st.warning("⏳ Nhạc chưa sẵn sàng sau 5 phút, hãy thử lại sau!")
+
+                    # Kiểm tra và hiển thị nhạc
+                    for idx, (audio_url, title, image_url) in enumerate(
+                        [(audio_url, title_data, img_url), (audio_url2, title_data2, img_url2)]
+                    ):
+
+                        if audio_url:
+                            st.success(f"🎵 Your music are ready: [{title}]")
+                            render_music_player(title, audio_url, image_url)
+                        else:
+                            st.warning("⏳ Music not ready after 5 minutes, please try again later!")
             else:
-                st.error(f"🚨 Lỗi API: {response.json().get('error', 'Không rõ lỗi!')}")
+                st.error(f"🚨 error : {response.json().get('error', 'Unknown error!')}")
+
+
+
