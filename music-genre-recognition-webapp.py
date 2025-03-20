@@ -373,7 +373,8 @@ if menu == "Feel The Beat":
 
     # Nhập API Token
     api_token = "2d551602f3a39d8f3e219db2c94d7659"
-    custom_mode = st.toggle("Custom Mode", value=True)
+    custom_mode = st.checkbox("Custom Mode", value=True)
+
     # Nhập mô tả nhạc cần tạo
     prompt = st.text_area("💡 Enter a description of the track you want to create:", 
     placeholder="A relaxing piano piece with a gentle melody...")
