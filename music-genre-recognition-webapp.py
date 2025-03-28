@@ -78,7 +78,7 @@ st.markdown(
     <style>
         /* Đặt hình nền chung cho toàn bộ trang */
         body, .stApp {
-            background: url("https://i.pinimg.com/originals/c3/aa/cd/c3aacdb10d1c0d550b7fa08b6d0bddb1.jpg") no-repeat center center fixed;
+            background: url("https://st.quantrimang.com/photos/image/2020/10/01/hinh-nen-den.jpg") no-repeat center center fixed;
             background-size: cover;
         }
 
@@ -119,7 +119,7 @@ st.markdown(
 
         /* Ô nhập liệu trong suốt */
         .stTextInput>div>div>input {
-            background-color: rgba(255, 255, 255, 0.2) !important;
+            background-color: #0E1117  !important;
             border-radius: 5px;
             border: 1px solid rgba(255, 255, 255, 0.5) !important;
             padding: 10px !important;
