@@ -119,7 +119,7 @@ st.markdown(
 
         /* Ô nhập liệu trong suốt */
         .stTextInput>div>div>input {
-            background-color: #0E1117  !important;
+            background-color: rgba(255, 255, 255, 0.2) !important;
             border-radius: 5px;
             border: 1px solid rgba(255, 255, 255, 0.5) !important;
             padding: 10px !important;
