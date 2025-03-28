@@ -362,11 +362,14 @@ if menu == "Create Lyrics":
     lyrics_input = st.text_area("🎼 Lời bài hát AI tạo:", lyrics, height=300)
     # Kiểm tra nếu nội dung text_area thay đổi và tự động sao chép vào clipboard
     
-    if st.button("Copy Lyrics"):
-            pyperclip.copy(lyrics_input)  # Sao chép lyrics vào clipboard
-            lyrics = lyrics_input
-            st.session_state.lyrics = lyrics
-            st.success("Lyrics have been copied to clipboard and Feel The Beat")  # Hiển thị thông báo thành công
+    # Nút copy với kiểm tra môi trường
+    if st.button("📋 Copy Lyrics"):
+        try:
+            import pyperclip
+            pyperclip.copy(lyrics_input)
+            st.success("📋 Lyrics đã được sao chép vào clipboard!")
+        except pyperclip.PyperclipException:
+            st.warning("⚠️ Không thể sao chép trong môi trường hiện tại. Vui lòng sao chép thủ công.")
 
     if lyrics_input != lyrics:
         lyrics = lyrics_input
