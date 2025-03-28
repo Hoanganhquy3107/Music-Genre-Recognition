@@ -364,16 +364,21 @@ if menu == "Create Lyrics":
     
     # Nút copy với kiểm tra môi trường
     if st.button("📋 Copy Lyrics"):
+        # Lưu lyrics vào session_state (textbox giữ nguyên)
+        st.session_state.lyrics_input = lyrics_input
+        st.session_state.lyrics = lyrics_input
+    
+        # Cố gắng sao chép vào clipboard
         try:
             import pyperclip
             pyperclip.copy(lyrics_input)
-            st.success("📋 Lyrics đã được sao chép vào clipboard!")
+            st.success("📋 Lyrics đã được sao chép vào clipboard và cập nhật vào ô nhập!")
         except pyperclip.PyperclipException:
-            st.warning("⚠️ Không thể sao chép trong môi trường hiện tại. Vui lòng sao chép thủ công.")
-
-    if lyrics_input != lyrics:
-        lyrics = lyrics_input
-        st.session_state.lyrics_input = lyrics
+            st.warning("⚠️ Không thể sao chép trong môi trường hiện tại. Lyrics đã được cập nhật vào ô nhập.") 
+    # Lưu lại lyrics khi người dùng tự sửa trong text_area
+    if lyrics_input != st.session_state.get("lyrics_input", ""):
+        st.session_state.lyrics_input = lyrics_input
+        st.session_state.lyrics = lyrics_input 
 
 
 import time
