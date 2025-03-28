@@ -1,61 +1,50 @@
-
-# auth.py
-
-import os
+import re
 import streamlit as st
-from supabase import create_client, Client
 from dotenv import load_dotenv
+from supabase import create_client, Client
 
-# Load biến môi trường
+# Load biến môi trường từ .env
 load_dotenv()
 
-# Kết nối Supabase
 SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# ============================================
-# 1. HÀM ĐĂNG KÝ NGƯỜI DÙNG (Sign Up)
-# ============================================
-import re  # Thêm trên đầu file nếu chưa có
-
+# =============================
+# 1. ĐĂNG KÝ TÀI KHOẢN
+# =============================
 def register_user(email, password, full_name):
     try:
-        # Kiểm tra định dạng email bằng regex
+        # Kiểm tra định dạng email
         email_regex = r"^[\w\.-]+@[\w\.-]+\.\w+$"
         if not re.match(email_regex, email):
-            return False, "❌ Email không hợp lệ. Vui lòng kiểm tra lại."
+            return False, "❌ Email không hợp lệ."
 
-        # Gửi yêu cầu đăng ký
+        # Kiểm tra email đã tồn tại chưa
+        user_list = supabase.auth.admin.list_users(email=email)
+        if user_list.users:
+            return False, "⚠️ Email này đã được đăng ký. Vui lòng đăng nhập hoặc sử dụng email khác."
+
+        # Đăng ký tài khoản
         res = supabase.auth.sign_up({
             "email": email,
             "password": password
         })
 
-        # Nếu không có user được trả về
         if not res.user:
-            return False, "⚠️ Email này đã được đăng ký. Vui lòng đăng nhập hoặc sử dụng email khác."
+            return False, "⚠️ Không thể đăng ký tài khoản, vui lòng thử lại."
 
-        return True, f"✅ Đăng ký thành công! Mã xác minh đã được gửi đến {email}."
+        return True, f"✅ Đăng ký thành công! Vui lòng xác minh email: {email}"
 
     except Exception as e:
-        error_message = str(e)
-
-        # Bắt lỗi phổ biến
-        if "User already registered" in error_message or "duplicate key" in error_message or "Email rate limit" in error_message:
-            return False, "⚠️ Email đã tồn tại. Vui lòng đăng nhập hoặc dùng email khác."
-
-        print("Đăng ký lỗi:", error_message)
-        return False, f"❌ Lỗi đăng ký: {error_message}"
+        return False, f"❌ Lỗi đăng ký: {str(e)}"
 
 
-
-# ============================================
-# 2. HÀM ĐĂNG NHẬP (Sign In)
-# ============================================
+# =============================
+# 2. ĐĂNG NHẬP
+# =============================
 def login_user(email, password):
     try:
-        # Gửi yêu cầu đăng nhập
         result = supabase.auth.sign_in_with_password({
             "email": email,
             "password": password
@@ -70,16 +59,15 @@ def login_user(email, password):
         if user.email_confirmed_at is None:
             return False, "📩 Vui lòng xác minh email trước khi đăng nhập."
 
-        # Lưu vào session_state của Streamlit
+        # Lưu thông tin user vào session
         st.session_state["user"] = {
             "id": user.id,
             "email": user.email
         }
 
-        # ============================================
-        # TẠO PROFILE VÀ VÍ CREDITS nếu chưa tồn tại
-        # ============================================
-        # Kiểm tra user_profiles
+        # =============================
+        # TẠO user_profiles nếu chưa có
+        # =============================
         profile_check = supabase.table("user_profiles").select("id").eq("id", user.id).execute()
         if not profile_check.data:
             supabase.table("user_profiles").insert({
@@ -88,23 +76,26 @@ def login_user(email, password):
                 "role": "client"
             }).execute()
 
-            supabase.table("credits_wallet").insert({
-                "user_id": user.id,
-                "credit": 10000000
-            }).execute()
-
-        return True, f"🎉 Xin chào {user.email}!"
+        return True, f"🎉 Đăng nhập thành công, xin chào {user.email}!"
 
     except Exception as e:
         return False, f"❌ Lỗi đăng nhập: {e}"
 
-# ============================================
-# 3. EXPORT LẠI SUPABASE ĐỂ DÙNG RESET PASSWORD
-# ============================================
-# Trong app.py sẽ gọi: from auth import supabase
+
+# =============================
+# 3. RESET PASSWORD
+# =============================
+def reset_password(email):
+    try:
+        supabase.auth.reset_password_for_email(email)
+        return True, "📬 Đã gửi email đặt lại mật khẩu."
+    except Exception as e:
+        return False, f"❌ Lỗi khi gửi email: {e}"
 
 
-    return True, "✅ Đã trừ credit"
+# =============================
+# 4. LƯU BÀI HÁT
+# =============================
 def save_song(user_id, title, lyrics, genre, audio_url, style, instruments, is_public=False):
     try:
         supabase.table("songs").insert({
