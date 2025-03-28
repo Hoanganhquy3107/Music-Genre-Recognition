@@ -28,6 +28,9 @@ from supabase import create_client, Client
 import requests  # Dùng để gửi yêu cầu API
 from auth import save_song
 import asyncio 
+import nest_asyncio
+nest_asyncio.apply()
+
 
 st.set_page_config(page_title="Music AI Website", layout="wide")
 # Load API key từ file .env
@@ -131,7 +134,7 @@ st.markdown(
 
 
 with st.sidebar:
-    st.image("a-minimalist-logo-design-on-a-black-back.jpeg", use_container_width=True)
+    st.image("a-minimalist-logo-design-on-a-black-back_0AWYUQ3rQfy5rgcfFzPdJQ_5N7Moh5lTRa_PQanVq-UkQ.jpeg",width=250 )
     # Nếu chưa đăng nhập thì hiển thị menu Đăng ký/Đăng nhập/Quên mật khẩu
     if "user" not in st.session_state:
         auth_menu = st.radio("🔐 Tài khoản", ["Đăng nhập", "Đăng ký", "Quên mật khẩu"], horizontal=True)
@@ -615,4 +618,5 @@ async def Feel_The_Beat():
             st.success(f"🎵 Your music is ready: [{title}]")
             render_music_player(title, audio_url, image_url)
 if menu == "Feel The Beat":
-    asyncio.run(Feel_The_Beat())
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(Feel_The_Beat())
