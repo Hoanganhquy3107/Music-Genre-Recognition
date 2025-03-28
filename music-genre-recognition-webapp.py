@@ -363,18 +363,18 @@ if menu == "Create Lyrics":
     # Kiểm tra nếu nội dung text_area thay đổi và tự động sao chép vào clipboard
     
     # Nút copy với kiểm tra môi trường
+    # Nút "Copy Lyrics" (thực chất là lưu lyrics + gợi ý người dùng tự sao chép)
     if st.button("📋 Copy Lyrics"):
-        # Lưu lyrics vào session_state (textbox giữ nguyên)
+        # Cập nhật session_state
         st.session_state.lyrics_input = lyrics_input
         st.session_state.lyrics = lyrics_input
     
-        # Cố gắng sao chép vào clipboard
-        try:
-            import pyperclip
-            pyperclip.copy(lyrics_input)
-            st.success("📋 Lyrics đã được sao chép vào clipboard và cập nhật vào ô nhập!")
-        except pyperclip.PyperclipException:
-            st.warning("⚠️ Không thể sao chép trong môi trường hiện tại. Lyrics đã được cập nhật vào ô nhập.") 
+        # Gửi thông báo rõ ràng
+        st.info("✅ Lyrics đã được lưu. Bạn có thể copy thủ công hoặc chuyển sang 'Feel The Beat' để tạo nhạc.")
+    
+        # Optional: nút tải xuống
+        st.download_button("💾 Tải lời bài hát", data=lyrics_input, file_name="lyrics.txt")
+
     # Lưu lại lyrics khi người dùng tự sửa trong text_area
     if lyrics_input != st.session_state.get("lyrics_input", ""):
         st.session_state.lyrics_input = lyrics_input
