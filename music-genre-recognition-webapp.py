@@ -184,9 +184,23 @@ with st.sidebar:
         st.markdown(f"👋 Xin chào, **{st.session_state['user']['email']}**")
         st.markdown("📌 Bạn có thể sử dụng toàn bộ chức năng")
         if st.button("🚪 Đăng xuất"):
-            st.session_state.clear()
-            st.success("✅ Đã đăng xuất.")
-            st.rerun()
+            st.session_state["confirm_logout"] = True
+        
+        # Hiển thị hộp xác nhận
+        if st.session_state.get("confirm_logout"):
+            st.warning("⚠️ Bạn có chắc chắn muốn đăng xuất không?")
+            col1, col2 = st.columns(2)
+        
+            with col1:
+                if st.button("✅ Có, đăng xuất"):
+                    st.session_state.clear()
+                    st.success("✅ Đã đăng xuất.")
+                    st.experimental_rerun()
+        
+            with col2:
+                if st.button("❌ Không, quay lại"):
+                    st.session_state["confirm_logout"] = False
+                    st.experimental_rerun()
     else:
         st.markdown("👤 Bạn đang truy cập với tư cách **khách**")
         st.info("👉 Vui lòng đăng nhập để mở khoá các tính năng chính.")
