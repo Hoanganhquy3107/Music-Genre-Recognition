@@ -26,10 +26,8 @@ import time
 from dotenv import load_dotenv
 from supabase import create_client, Client
 import requests  # Dùng để gửi yêu cầu API
-from auth import save_song
 import asyncio 
-import nest_asyncio
-nest_asyncio.apply()
+import streamlit.components.v1 as components    
 
 
 st.set_page_config(page_title="Music AI Website", layout="wide")
@@ -47,6 +45,23 @@ SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 print(os.path.exists("D:/test/Music-Genre-Recognition-main/.streamlit/secrets.toml"))
+
+def check_user_session():
+    session = supabase.auth.get_session()  # Lấy session từ Supabase (kiểm tra cookie)
+    if session:
+        # Nếu có session hợp lệ, lưu thông tin người dùng vào st.session_state
+        st.session_state['user'] = {
+            'email': session.user['email'],  # Lưu email người dùng
+            'access_token': session.access_token  # Lưu token nếu cần
+        }
+    else:
+        # Nếu không có session, kiểm tra nếu user đã login nhưng bị mất session
+        if "user" not in st.session_state:
+            st.session_state.clear()  # Xóa session nếu không có session hợp lệ
+
+# Gọi hàm kiểm tra session ngay khi trang được tải lại
+check_user_session()
+
 
 
 def generate_lyrics(prompt):
@@ -73,12 +88,15 @@ def generate_lyrics(prompt):
 #lyrics = generate_lyrics(prompt)
 #print(lyrics)
 
+
+
+
 st.markdown(
     """
     <style>
         /* Đặt hình nền chung cho toàn bộ trang */
         body, .stApp {
-            background: url("https://st.quantrimang.com/photos/image/2020/10/01/hinh-nen-den.jpg") no-repeat center center fixed;
+            background: url("https://i.pinimg.com/originals/c3/aa/cd/c3aacdb10d1c0d550b7fa08b6d0bddb1.jpg") no-repeat center center fixed;
             background-size: cover;
         }
 
@@ -133,8 +151,12 @@ st.markdown(
 )
 
 
+
+
+
+
 with st.sidebar:
-    st.image("a-minimalist-logo-design-on-a-black-back_0AWYUQ3rQfy5rgcfFzPdJQ_5N7Moh5lTRa_PQanVq-UkQ.jpeg",width=250 )
+    st.image("a-minimalist-logo-design-on-a-black-back.jpeg", use_container_width=True)
     # Nếu chưa đăng nhập thì hiển thị menu Đăng ký/Đăng nhập/Quên mật khẩu
     if "user" not in st.session_state:
         auth_menu = st.radio("🔐 Tài khoản", ["Đăng nhập", "Đăng ký", "Quên mật khẩu"], horizontal=True)
@@ -148,6 +170,7 @@ with st.sidebar:
                 from auth import register_user
                 success, msg = register_user(email, password, full_name)
                 if success:
+                    st.session_state['user'] = {'email': email}  # Lưu email vào session_state
                     st.success(msg)
                     st.info("📧 Vui lòng kiểm tra hộp thư để xác minh tài khoản trước khi đăng nhập.")
                 else:
@@ -161,6 +184,7 @@ with st.sidebar:
                 from auth import login_user
                 success, msg = login_user(email, password)
                 if success:
+                    st.session_state['user'] = {'email': email}  # Lưu email vào session_state
                     st.success(msg)
                     st.rerun()
                 else:
@@ -184,23 +208,9 @@ with st.sidebar:
         st.markdown(f"👋 Xin chào, **{st.session_state['user']['email']}**")
         st.markdown("📌 Bạn có thể sử dụng toàn bộ chức năng")
         if st.button("🚪 Đăng xuất"):
-            st.session_state["confirm_logout"] = True
-        
-        # Hiển thị hộp xác nhận
-        if st.session_state.get("confirm_logout"):
-            st.warning("⚠️ Bạn có chắc chắn muốn đăng xuất không?")
-            col1, col2 = st.columns(2)
-        
-            with col1:
-                if st.button("✅ Có, đăng xuất"):
-                    st.session_state.clear()
-                    st.success("✅ Đã đăng xuất.")
-                    st.experimental_rerun()
-        
-            with col2:
-                if st.button("❌ Không, quay lại"):
-                    st.session_state["confirm_logout"] = False
-                    st.experimental_rerun()
+            st.session_state.clear()
+            st.success("✅ Đã đăng xuất.")
+            st.rerun()
     else:
         st.markdown("👤 Bạn đang truy cập với tư cách **khách**")
         st.info("👉 Vui lòng đăng nhập để mở khoá các tính năng chính.")
@@ -362,23 +372,15 @@ if menu == "Create Lyrics":
     lyrics_input = st.text_area("🎼 Lời bài hát AI tạo:", lyrics, height=300)
     # Kiểm tra nếu nội dung text_area thay đổi và tự động sao chép vào clipboard
     
-    # Nút copy với kiểm tra môi trường
-    # Nút "Copy Lyrics" (thực chất là lưu lyrics + gợi ý người dùng tự sao chép)
-    if st.button("📋 Copy Lyrics"):
-        # Cập nhật session_state
-        st.session_state.lyrics_input = lyrics_input
-        st.session_state.lyrics = lyrics_input
-    
-        # Gửi thông báo rõ ràng
-        st.info("✅ Lyrics đã được lưu. Bạn có thể copy thủ công hoặc chuyển sang 'Feel The Beat' để tạo nhạc.")
-    
-        # Optional: nút tải xuống
-        st.download_button("💾 Tải lời bài hát", data=lyrics_input, file_name="lyrics.txt")
+    if st.button("Copy Lyrics"):
+            pyperclip.copy(lyrics_input)  # Sao chép lyrics vào clipboard
+            lyrics = lyrics_input
+            st.session_state.lyrics = lyrics
+            st.success("Lyrics have been copied to clipboard and Feel The Beat")  # Hiển thị thông báo thành công
 
-    # Lưu lại lyrics khi người dùng tự sửa trong text_area
-    if lyrics_input != st.session_state.get("lyrics_input", ""):
-        st.session_state.lyrics_input = lyrics_input
-        st.session_state.lyrics = lyrics_input 
+    if lyrics_input != lyrics:
+        lyrics = lyrics_input
+        st.session_state.lyrics_input = lyrics
 
 
 import time
@@ -569,7 +571,8 @@ def render_game_html():
 # Phần chính của ứng dụng
 async def Feel_The_Beat():
     st.title("🎵 Feel The Beat - Tạo Nhạc AI")
-    api_token = st.secrets["api_token"]
+
+    api_token = "2d551602f3a39d8f3e219db2c94d7659"
     custom_mode = st.toggle("Custom Mode", value=True)
     if "lyrics" in st.session_state:
         lyrics = st.session_state.lyrics
@@ -625,9 +628,12 @@ async def Feel_The_Beat():
                 
                 if music_data:
                     st.session_state["music_data"] = music_data  # Lưu nhạc vào session_state
-                    for audio_url, title, image_url in music_data:
+
+                    for i, (audio_url, title, image_url) in enumerate(music_data):
+
                         st.success(f"🎵 Your music is ready: [{title}]")
-                        render_music_player(title, audio_url, image_url)
+                        render_music_player(title, audio_url, image_url)                        
+
                 else:
                     st.warning("⏳ Music not ready after 5 minutes, please try again later!")
             else:
@@ -639,6 +645,8 @@ async def Feel_The_Beat():
         for audio_url, title, image_url in music_data:
             st.success(f"🎵 Your music is ready: [{title}]")
             render_music_player(title, audio_url, image_url)
+            
 if menu == "Feel The Beat":
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(Feel_The_Beat())
+    asyncio.run(Feel_The_Beat())
+
+
