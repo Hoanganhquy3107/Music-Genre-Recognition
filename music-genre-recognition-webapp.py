@@ -156,7 +156,7 @@ st.markdown(
 
 
 with st.sidebar:
-    st.image("a-minimalist-logo-design-on-a-black-back.jpeg", use_container_width=True)
+    st.image("a-minimalist-logo-design-on-a-black-back_0AWYUQ3rQfy5rgcfFzPdJQ_5N7Moh5lTRa_PQanVq-UkQ.jpeg", use_container_width=True)
     # Nếu chưa đăng nhập thì hiển thị menu Đăng ký/Đăng nhập/Quên mật khẩu
     if "user" not in st.session_state:
         auth_menu = st.radio("🔐 Tài khoản", ["Đăng nhập", "Đăng ký", "Quên mật khẩu"], horizontal=True)
