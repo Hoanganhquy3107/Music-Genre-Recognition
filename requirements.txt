@@ -12,7 +12,6 @@ keras==2.15.0
 pydub==0.25.1
 seaborn==0.13.2
 streamlit-option-menu==0.3.6
-scipy==1.11.3
 scikit-learn==1.6.1
 torch==2.1.0
 torchaudio==2.1.0
