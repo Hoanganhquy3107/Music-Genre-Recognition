@@ -60,8 +60,8 @@ print(os.path.exists("D:/test/Music-Genre-Recognition-main/.streamlit/secrets.to
 
 # Cấu hình logging - Lưu các lỗi vào file 'app.log'
 logging.basicConfig(filename='app.log', level=logging.ERROR, format='%(asctime)s - %(message)s')
-# Mô phỏng toggle switch bằng checkbox
-toggle_state = st.checkbox("Enable feature")
+# # Mô phỏng toggle switch bằng checkbox
+# toggle_state = st.checkbox("Enable feature")
 # Hàm ghi lỗi vào log
 def log_error(message):
     """Ghi lỗi vào file log và hiển thị thông báo lỗi cho người dùng."""
