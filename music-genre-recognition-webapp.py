@@ -36,7 +36,7 @@ import base64
 import logging
 from chatbot import display_chatbot 
 import streamlit as st
-from streamlit_toggle import st_toggle_switch
+from streamlit_toggle_switch import st_toggle_switch
 import time
 import requests
 import hmac
