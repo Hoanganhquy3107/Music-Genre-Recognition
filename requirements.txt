@@ -16,7 +16,6 @@ scikit-learn==1.6.1
 torch==2.1.0
 torchaudio==2.1.0
 python-dotenv==0.21.1  # Giữ lại phiên bản ổn định
-soundfile==0.12.1  # Giữ lại phiên bản ổn định
 opencv-python==4.7.0.72
 nltk==3.8.1
 supabase>=1.0.3
