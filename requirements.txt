@@ -148,4 +148,4 @@ streamlit-toggle
 streamlit-toggle-switch
 supabase==2.15.0
 supafunc==0.9.3
-supabase-py==1.0.3
+supabase-py==2.15.0
