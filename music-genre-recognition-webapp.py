@@ -36,7 +36,6 @@ import base64
 import logging
 from chatbot import display_chatbot 
 import time
-import requests
 import hmac
 import hashlib
 import uuid
