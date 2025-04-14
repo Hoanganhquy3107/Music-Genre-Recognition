@@ -115,7 +115,7 @@ st.markdown(
         /* Thiết lập nền và font chữ chung */
         body, .stApp {
             # background: linear-gradient(135deg, #0E0808 0%, #1A1A1A 100%) !important;
-            background: url("https://t4.ftcdn.net/jpg/01/28/98/53/360_F_128985367_mNdX0b56w6OcgiyUDnZwukpK1bkpfWwI.jpg") no-repeat center center fixed;
+            background: url("https://i.imgur.com/vzl5Tex.png") no-repeat center center fixed;
             background-size: cover !important;
             font-family: 'Roboto', sans-serif;
             color: #FFFFFF;
