@@ -36,7 +36,7 @@ import base64
 import logging
 from chatbot import display_chatbot 
 import streamlit as st
-from streamlit_toggle import st_toggle_switch
+from streamlit_toggle 
 import time
 import requests
 import hmac
@@ -44,7 +44,8 @@ import hashlib
 import uuid
 import pandas as pd
 from datetime import datetime, timedelta
-
+# Mô phỏng toggle switch bằng checkbox
+toggle_state = st.checkbox("Enable feature")
 
 # Load API key từ file .env
 load_dotenv()
