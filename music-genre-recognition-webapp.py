@@ -1241,21 +1241,17 @@ if menu == "Library":
     else:
         st.warning("🔒 Vui lòng đăng nhập để xem thư viện của bạn.")
 
-
-
-
 # MoMo config
 MOMO_CONFIG = {
     "MomoApiUrl": "https://test-payment.momo.vn/v2/gateway/api/create",
     "PartnerCode": "MOMO",
     "AccessKey": "F8BBA842ECF85",
     "SecretKey": "K951B6PE1waDMi640xX08PD3vg6EkVlz",
-    "ReturnUrl": "http://localhost:8501",
+    "ReturnUrl": "https://aimusic-fvj4bjxfbumlktejiy6gb4.streamlit.app/",
     "IpnUrl": "https://webhook.site/b052aaf4-3be0-43c5-8bad-996d2d0c0e54",
     "RequestType": "captureWallet",
     "ExtraData": "Astronaut_Music_payment"
 }
-
 
 @st.cache_data(ttl=86400)
 def get_usd_to_vnd():
@@ -1264,7 +1260,6 @@ def get_usd_to_vnd():
         res = requests.get(url)
         if res.status_code == 200:
             rate = res.json()["conversion_rates"]["VND"]
-            st.write(f"💱 USD → VND Exchange Rate (ExchangeRate-API): {rate:,.0f}")
             return int(rate)
     except:
         st.error("❌  Error fetching exchange rate.")
@@ -1278,46 +1273,170 @@ def generate_signature(data, secret_key):
         f"requestId={data['requestId']}&requestType={data['requestType']}"
     )
     return hmac.new(secret_key.encode(), raw_signature.encode(), hashlib.sha256).hexdigest()
-
 if menu == "Payment":
+
     st.title("💰 Payment")
     if "user" not in st.session_state:
         st.warning("🔐 Please log in.")
         st.stop()
     user_id = st.session_state["user"]["id"]
+    usd_to_vnd = get_usd_to_vnd()
     # Lấy số dư hiện tại
     credit_data = supabase.table("user_credits").select("credits").eq("id", user_id).execute()
     credits = credit_data.data[0]["credits"] if credit_data.data else 0
-    st.metric("Current Credits", f"{credits:,} credits")
+    current_credits = credit_data.data[0]["credits"] if credit_data.data else 0
+    st.markdown(f"""
+    <div class="credit-container">
+        <div class="credit-item">
+            <div class="credit-info-row">
+                <div class="cost-item">
+                    <h3>{current_credits} Credits</h3>
+                </div>
+            </div>
+            <div class="cost-container">
+                <h2>💱 USD → VND Exchange Rate (ExchangeRate-API): {usd_to_vnd:,.0f}</h2>
+                <p>Cost per generation</p>
+                <div class="cost-items">
+                    <div class="cost-item">
+                        <h3>25</h3>
+                        <p>Feel The Beat</p>
+                    </div>
+                    <div class="cost-item">
+                        <h3>10</h3>
+                        <p>Lyrics</p>
+                    </div>
+                    <div class="cost-item">
+                        <h3>5</h3>
+                        <p>Classify</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>                                      
+
+    <style>
+        .credit-container {{
+            background: linear-gradient(to bottom right, #6a0dad, #00008b, #000000);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 10px;
+            max-width: 500px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            border: 5px solid #00b8ff;
+            box-shadow: 0 0 20px 5px #00b8ff;
+        }}
+
+        .credit-item {{
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 10px;
+        }}
+
+        .credit-info-row {{
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+        }}
+
+        .cost-container {{
+            color: white;
+            font-size: 14px;
+        }}
+
+        .cost-container p {{
+            text-align: center;
+            margin-bottom: 8px;
+            font-size: 20px;
+            color: #F28500 !important;
+        }}
+
+        .cost-container h2 {{
+            text-align: center;
+            margin-bottom: 8px;
+            font-size: 20px;
+            color: #FF1C3B !important;
+        }}
+
+        .cost-items {{
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }}
+
+        .cost-item {{
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            padding: 10px;
+            text-align: center;
+            flex: 1;
+        }}
+
+        .cost-item h3 {{
+            color: #FFFF33 !important;
+            font-size: 30px;
+            margin-bottom: 6px;
+        }}
+
+        .cost-item p {{
+            color: white !important;
+            font-size: 18px;
+            margin: 0;
+        }}
+    </style>
+    """, unsafe_allow_html=True)
+
+    # Lấy số dư hiện tại
+    credit_data = supabase.table("user_credits").select("credits").eq("id", user_id).execute()
+    credits = credit_data.data[0]["credits"] if credit_data.data else 0
+    current_credits = credit_data.data[0]["credits"] if credit_data.data else 0
+    
     # Bảng giá
     st.subheader("📦 Credit Packages")
-    usd_to_vnd = get_usd_to_vnd()
-    st.markdown("🎶 **Cost per music creation: 25 credits**")
+    
     packages = [
-        {"price": 5, "credits": 1000, "discount": None},
-        {"price": 50, "credits": 10000, "discount": None},
-        {"price": 500, "credits": 105000, "discount": "Save 5%"},
-        {"price": 1250, "credits": 275000, "discount": "Save 10%"},
+    {"name": "Basic", "price": 5, "credits": 1000, "discount": None},
+    {"name": "Standard", "price": 50, "credits": 10000, "discount": None},
+    {"name": "Premium", "price": 500, "credits": 105000, "discount": "Save 5%"},
+    {"name": "Professional", "price": 1250, "credits": 275000, "discount": "Save 10%"},
     ]
+
     cols = st.columns(len(packages), gap="large")
 
     for i, (col, pack) in enumerate(zip(cols, packages)):
         with col:
+            # Tính số lượng dựa vào credits
+            musical_creations = pack["credits"] // 25
+            lyrics_generations = pack["credits"] // 10
+
+            included_html = f"""<div style='text-align: left;'>
+            <h2><strong>This pack includes:</strong></h2>
+            <h2>✅ {musical_creations:,} musical creations</h2>
+            <h2>✅ {lyrics_generations:,} generations of lyrics</h2>
+            </div>"""
+
             if pack["discount"]:
                 package_html = f"""
                 <div class="package highlight">
                     <div class="ribbon">{pack["discount"]}</div>
+                    <h1>{pack['name']}</h1>
                     <h3>${pack['price']}</h3>
                     <p>{pack['credits']:,} Credits</p>
+                    {included_html}
                 </div>
                 """
             else:
                 package_html = f"""
                 <div class="package">
+                    <h1>{pack['name']}</h1>
                     <h3>${pack['price']}</h3>
                     <p>{pack['credits']:,} Credits</p>
+                    {included_html}
                 </div>
                 """
+
             st.markdown(package_html, unsafe_allow_html=True)
 
             with st.form(f"form_{i}"):
@@ -1366,19 +1485,60 @@ if menu == "Payment":
     # CSS đẹp
     st.markdown("""
         <style>
+        .package h1 {
+            font-size: 1.4rem !important;
+            margin-bottom: 0.33rem;
+            color: #FF1493 !important;
+        }
+
+        .package.highlight h1 {
+            font-size: 1.4rem !important;
+            margin-bottom: 0.3rem;
+            color:  #FF1493 !important;
+            
+        }
         
+        .package h2{
+            font-size: 0.8rem !important;
+            margin-bottom: 0.3rem;
+            color: #CCCCCC !important;
+        }
+        .package h3{
+                font-size: 2.7rem !important;
+            color: #FFFF33 !important;}
+        .package p {
+            color: #FFA500 !important;
+                font-size: 1.4rem !important;
+        }
+
+        
+        .package.highlight h2{
+            font-size: 0.8rem !important;
+            margin-bottom: 0.3rem;
+            color: #CCCCCC !important;
+        }
+        .package.highlight h3{
+                font-size: 2.7rem !important;
+            color: #FFFF33 !important;}
+        .package.highlight p {
+            color: #FFA500 !important;
+                font-size: 1.4rem !important;
+        }
+
         .package {
             position: relative;
-            background: linear-gradient(to right, #9b59b6, #ff4e50, #ff7eb3) !important;
+            background: linear-gradient(to right, #0f4c81, #4b2c83) !important;
             border-radius: 10px;
             padding: 1.5rem;
             text-align: center;
-            color: #ffffff;
-            min-height: 120px;
+            color: #FFD700 !important;
             transition: 0.3s;
+            border: 5px solid #00b8ff;
+            box-shadow: 0 0 20px 5px #00b8ff;
+
         }
         .package.highlight {
-            background: linear-gradient(to right, #2196F3, #9C27B0, #FF4081, #FFEB3B, #4CAF50) !important;
+            background: linear-gradient(to bottom right, #4B0082, #000000) !important;
             color: #ffffff;
         }
         
@@ -1456,5 +1616,6 @@ if menu == "Payment":
     if not order_id_param:
         pending_query = supabase.table("pending_payments").select("*").eq("user_id", user_id).execute()
         pending_data = pending_query.data[0] if pending_query.data else None
+
 
 
