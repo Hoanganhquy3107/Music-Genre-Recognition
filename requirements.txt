@@ -1,4 +1,4 @@
-streamlit==1.44.1
+streamlit==1.42.2
 bcrypt==4.3.0
 rembg==2.0.55
 Pillow==9.3.0  # Giữ lại phiên bản ổn định
