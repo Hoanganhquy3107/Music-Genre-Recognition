@@ -1,5 +1,6 @@
 import streamlit as st
 st.set_page_config(page_title="Music AI Website", layout="wide")
+from streamlit_toggle import st_toggle_switch
 import os
 import bcrypt
 import re  # Thêm thư viện kiểm tra email hợp lệ
