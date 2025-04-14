@@ -5,10 +5,10 @@ streamlit>=1.28.0
 numba==0.57
 numpy==1.23.5
 pytube==15.0.0
-librosa==0.10.1
+librosa==0.10.1  # Hoặc thay bằng 0.11.0 tùy bạn chọn
 matplotlib==3.8.2
 tensorflow==2.15.0
-keras==2.15.0  # Giữ lại phiên bản này
+keras==2.15.0
 pydub==0.25.1
 seaborn==0.13.2
 streamlit-option-menu==0.3.6
@@ -24,7 +24,7 @@ supabase>=1.0.3
 openai>=1.3.0
 nest_asyncio
 pyperclip
-requests==2.28.1         
+requests==2.28.1  # Hoặc 2.32.3 tùy bạn chọn
 streamlit-cookies-manager
 absl-py==2.1.0
 aiohappyeyeballs==2.6.1
@@ -75,11 +75,11 @@ jiter==0.9.0
 joblib==1.4.2
 jsonschema==4.23.0
 jsonschema-specifications==2024.10.1
-keras==2.15.0  # Giữ lại phiên bản này
+keras==2.15.0
 kiwisolver==1.4.8
 lazy_loader==0.4
 libclang==18.1.1
-librosa==0.11.0
+librosa==0.10.1  # Hoặc thay bằng 0.11.0 tùy bạn chọn
 llvmlite==0.44.0
 Markdown==3.7
 markdown-it-py==3.0.0
@@ -120,7 +120,7 @@ pytz==2025.1
 qrcode==8.0
 realtime==2.4.1
 referencing==0.36.2
-requests==2.32.3
+requests==2.28.1  # Hoặc 2.32.3 tùy bạn chọn
 rich==13.9.4
 rpds-py==0.23.1
 scikit-learn==1.6.1
@@ -159,3 +159,4 @@ streamlit-toggle-switch
 supabase==2.15.0
 supafunc==0.9.3
 supabase-py==1.0.3
+
