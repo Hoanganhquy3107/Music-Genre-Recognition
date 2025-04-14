@@ -5,8 +5,8 @@ streamlit>=1.28.0
 numba==0.57
 numpy==1.23.5
 pytube==15.0.0
-librosa==0.10.1  # Hoặc thay bằng 0.11.0 tùy bạn chọn
-matplotlib==3.8.2
+librosa==0.10.1  # Hoặc 0.11.0 tùy bạn chọn
+matplotlib==3.8.2  # Giữ một phiên bản duy nhất
 tensorflow==2.15.0
 keras==2.15.0
 pydub==0.25.1
@@ -79,12 +79,10 @@ keras==2.15.0
 kiwisolver==1.4.8
 lazy_loader==0.4
 libclang==18.1.1
-librosa==0.10.1  # Hoặc thay bằng 0.11.0 tùy bạn chọn
 llvmlite==0.44.0
 Markdown==3.7
 markdown-it-py==3.0.0
 MarkupSafe==3.0.2
-matplotlib==3.10.1
 mdurl==0.1.2
 ml_dtypes==0.5.1
 msgpack==1.1.0
@@ -159,4 +157,3 @@ streamlit-toggle-switch
 supabase==2.15.0
 supafunc==0.9.3
 supabase-py==1.0.3
-
