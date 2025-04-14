@@ -1,6 +1,6 @@
 streamlit==1.44.1
 bcrypt==4.3.0
-rembg==2.0.50
+rembg==2.0.55
 Pillow==9.3.0  # Giữ lại phiên bản ổn định
 numba==0.61.0
 numpy>=1.24,<=2.2
