@@ -1,7 +1,7 @@
+streamlit==1.43.2  
 bcrypt==4.3.0
 rembg==2.0.50
 Pillow==9.3.0  # Giữ lại phiên bản ổn định
-streamlit==1.44.1  # Streamlit hỗ trợ Python 3.7+
 numba==0.61.0
 numpy>=1.24,<=2.2
 pytube==15.0.0
