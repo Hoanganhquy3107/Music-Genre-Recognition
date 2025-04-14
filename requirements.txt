@@ -8,7 +8,7 @@ pytube==15.0.0
 librosa==0.10.1
 matplotlib==3.10.1
 tensorflow==2.19.0  # Đảm bảo hỗ trợ Python 3.11
-keras==2.15.0
+keras>=3.5.0
 pydub==0.25.1
 seaborn==0.13.2
 scikit-learn==1.6.1
