@@ -1,6 +1,5 @@
 import streamlit as st
 st.set_page_config(page_title="Music AI Website", layout="wide")
-from streamlit-toggle-switch import st_toggle_switch
 import os
 import bcrypt
 import re  # Thêm thư viện kiểm tra email hợp lệ
@@ -63,6 +62,27 @@ print(os.path.exists("D:/test/Music-Genre-Recognition-main/.streamlit/secrets.to
 logging.basicConfig(filename='app.log', level=logging.ERROR, format='%(asctime)s - %(message)s')
 # # Mô phỏng toggle switch bằng checkbox
 # toggle_state = st.checkbox("Enable feature")
+def st_toggle_switch(
+    label,
+    key,
+    default_value=False,
+    label_after=False,
+    active_color="#4CAF50",      # Màu bật
+    inactive_color="#888",       # Màu tắt
+    track_color="#ccc"           # Màu nền
+):
+    _ = active_color, inactive_color, track_color  # Đánh dấu là đã dùng
+    toggle_value = st.toggle(
+        label if not label_after else "",
+        value=default_value,
+        key=key,
+    )
+
+    if label_after:
+        st.write(f"**{label}**")
+
+    return toggle_value
+
 # Hàm ghi lỗi vào log
 def log_error(message):
     """Ghi lỗi vào file log và hiển thị thông báo lỗi cho người dùng."""
