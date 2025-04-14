@@ -35,6 +35,16 @@ from streamlit_cookies_manager import CookieManager
 import base64
 import logging
 from chatbot import display_chatbot 
+import streamlit as st
+from streamlit_toggle import st_toggle_switch  # Nếu bạn muốn dùng switch đẹp hơn từ thư viện
+import time
+import requests
+import hmac
+import hashlib
+import uuid
+import pandas as pd
+from datetime import datetime, timedelta
+
 
 # Load API key từ file .env
 load_dotenv()
@@ -556,41 +566,6 @@ if menu == "Home":
     </div>
     """, unsafe_allow_html=True)
     
-    # Thẻ thông tin tính năng
-    # features_col1, features_col2, features_col3 = st.columns(3)
-    
-    # with features_col1:
-    #     st.markdown("""
-    #     <div class="custom-container" style="height: 100%; text-align: center; padding: 0px;">
-    #         <div style="font-size: 48px; margin-bottom: 15px;">✏️</div>
-    #         <h3 style="margin-bottom: 10px;">Tạo lời bài hát</h3>
-    #         <p style="color: rgba(255,255,255,0.7);">
-    #             Dùng AI để viết lời bài hát theo phong cách và cảm xúc bạn mong muốn
-    #         </p>
-    #     </div>
-    #     """, unsafe_allow_html=True)
-        
-    # with features_col2:
-    #     st.markdown("""
-    #     <div class="custom-container" style="height: 100%; text-align: center; padding: 0px;">
-    #         <div style="font-size: 48px; margin-bottom: 15px;">🎵</div>
-    #         <h3 style="margin-bottom: 10px;">Sáng tạo âm nhạc</h3>
-    #         <p style="color: rgba(255,255,255,0.7);">
-    #             Tạo ra các bản nhạc độc đáo với AI theo phong cách riêng của bạn
-    #         </p>
-    #     </div>
-    #     """, unsafe_allow_html=True)
-        
-    # with features_col3:
-    #     st.markdown("""
-    #     <div class="custom-container" style="height: 100%; text-align: center; padding: 0px;">
-    #         <div style="font-size: 48px; margin-bottom: 15px;">🔍</div>
-    #         <h3 style="margin-bottom: 10px;">Phân tích thể loại</h3>
-    #         <p style="color: rgba(255,255,255,0.7);">
-    #             Phân tích và xác định thể loại nhạc từ file âm thanh của bạn
-    #         </p>
-    #     </div>
-    #     """, unsafe_allow_html=True)
     
     # HOT IN APRIL SECTION
     st.markdown("<h2 style='text-align: left;'>🔥 Bài Hát Hot Trong Tháng 4</h2>", unsafe_allow_html=True)
@@ -687,38 +662,6 @@ if menu == "Home":
 
         components.html(full_html, height=800)
  
-
-        
-        # Swiper & Player HTML
-        # full_html = f"""
-        # <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css'/>
-        # <script src='https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js'></script>
-
-        # <div class='swiper' style='padding-bottom: 30px;'>
-        #     <div class='swiper-wrapper'>
-        #         {slides_html}
-        #     </div>
-        # </div>
-
-      
-
-        # <script>
-        # const swiper = new Swiper('.swiper', {{
-        #     slidesPerView: 3,
-        #     spaceBetween: 225,
-        #     freeMode: true,
-        #     grabCursor: true,
-        #     breakpoints: {{
-        #         640: {{ slidesPerView: 1 }},
-        #         768: {{ slidesPerView: 2 }},
-        #         1024: {{ slidesPerView: 3 }},
-        #         1280: {{ slidesPerView: 4 }},
-        #     }}
-        # }});
-        # </script>
-        # """
-
-        #components.html(full_html, height=600 )
 
     else:
         st.info("🙈 Chưa có bài hát nào được chia sẻ.")
@@ -880,14 +823,6 @@ if menu == "Classify":
 
         # Hiển thị biểu đồ trong Streamlit
         st.pyplot(fig)
-
-
-
-
-
-import time
-import requests
-import streamlit as st
 
 
 
@@ -1108,8 +1043,6 @@ def render_game_html():
 async def Feel_The_Beat():
     st.title("🎵 Feel The Beat - Tạo Nhạc AI")
 
-
-
     custom_mode = st.toggle("Custom Mode", value=True)
     if "lyrics" in st.session_state:
         lyrics = st.session_state.lyrics
@@ -1213,8 +1146,7 @@ async def Feel_The_Beat():
 if menu == "Feel The Beat":
     asyncio.run(Feel_The_Beat())
 
-import streamlit as st
-from streamlit_toggle import st_toggle_switch  # Nếu bạn muốn dùng switch đẹp hơn từ thư viện
+
 
 if menu == "Library":
     if "user" in st.session_state and "email" in st.session_state["user"]:
@@ -1292,16 +1224,7 @@ if menu == "Library":
         st.warning("🔒 Vui lòng đăng nhập để xem thư viện của bạn.")
 
 
-# =========================== Payment ===========================
-import streamlit as st
-import requests
-import hmac
-import hashlib
-import uuid
-import pandas as pd
-from datetime import datetime, timedelta
-from supabase import create_client
-import streamlit.components.v1 as components
+
 
 # MoMo config
 MOMO_CONFIG = {
