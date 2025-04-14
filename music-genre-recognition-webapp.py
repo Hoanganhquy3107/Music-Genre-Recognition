@@ -30,7 +30,6 @@ import requests  # Dùng để gửi yêu cầu API
 import asyncio 
 import streamlit.components.v1 as components    
 from auth import register_user
-import streamlit as st
 from streamlit_cookies_manager import CookieManager
 import base64
 import logging
