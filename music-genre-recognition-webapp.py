@@ -338,7 +338,7 @@ def decode_email(encoded):
 
 # SIDEBAR NAVIGATION
 with st.sidebar:
-    st.image("a-minimalist-logo-design-on-a-black-back_0AWYUQ3rQfy5rgcfFzPdJQ_5N7Moh5lTRa_PQanVq-UkQ.jpeg", use_container_width=True)
+    st.image("a-minimalist-logo-design-on-a-black-back.jpeg", use_container_width=True)
 
     # Xử lý đăng nhập với cookie
     cookies = CookieManager()
