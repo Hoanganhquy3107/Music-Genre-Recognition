@@ -17,7 +17,6 @@ torchaudio==2.1.0
 python-dotenv==0.21.1  # Giữ lại phiên bản ổn định
 opencv-python==4.7.0.72
 nltk==3.8.1
-supabase-py==2.15.0  # Chọn phiên bản ổn định
 openai>=1.3.0
 nest_asyncio
 pyperclip
