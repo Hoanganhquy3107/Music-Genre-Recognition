@@ -1290,7 +1290,7 @@ if menu == "Payment":
         <div class="credit-item">
             <div class="credit-info-row">
                 <div class="cost-item">
-                    <h3 style="color: gold;" >{current_credits} Credits</h3>
+                    <h3>{current_credits} Credits</h3>
                 </div>
             </div>
             <div class="cost-container">
