@@ -1255,15 +1255,6 @@ async def Feel_The_Beat():
             else:
                 st.error("🚨 Error in music generation!")
 
-
-
-
-    # Kiểm tra nếu có nhạc đã tạo trong session_state
-    if "music_data" in st.session_state:
-        music_data = st.session_state["music_data"]
-        for audio_url, title, image_url in music_data:
-            st.success(f"🎵 Your music is ready: [{title}]")
-            render_music_player(title, audio_url, image_url)
 if menu == "Feel The Beat":
     asyncio.run(Feel_The_Beat())
 
