@@ -823,11 +823,11 @@ if menu == "Classify":
             plt.savefig('melspectrogram.png')
             plt.close()  # Đóng hình để giải phóng bộ nhớ
 
-            # Kiểm tra xem hình ảnh đã được tạo ra thành công
-            if os.path.exists('melspectrogram.png'):
-                st.success("Mel Spectrogram đã được tạo thành công.")
-            else:
-                st.error("Không thể tạo Mel Spectrogram.")
+            # # Kiểm tra xem hình ảnh đã được tạo ra thành công
+            # if os.path.exists('melspectrogram.png'):
+            #     st.success("Mel Spectrogram đã được tạo thành công.")
+            # else:
+            #     st.error("Không thể tạo Mel Spectrogram.")
             from PIL import Image
             
             try:
