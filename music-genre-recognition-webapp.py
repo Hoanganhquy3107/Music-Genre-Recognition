@@ -618,7 +618,7 @@ if menu == "Home":
                 <div style='background:#000000; border-radius:20px; width:200px; width:200px; color:white; font-family:sans-serif;'>
                     <div style='position:relative;'>
                         <img src="{image}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 20px; background: #000;" />
-                        <div style='position:absolute; top:6px; left:6px; background:#00cc88; color:white; font-size:10px; padding:2px 6px; border-radius:4px;'>v3-5</div>
+                        <div style='position:absolute; top:6px; left:6px; background:#00cc88; color:white; font-size:10px; padding:2px 6px; border-radius:4px;'>v4</div>
                         <div style='position:absolute; top:6px; right:6px; background:#333; color:white; font-size:10px; padding:2px 6px; border-radius:4px;'>{mins}:{secs:02}</div>
                         <div onclick='playTrack("{title}", "{artist}", "{audio}", "{image}")' style='position:absolute; bottom:6px; right:6px; background:#ff7e5f; color:white; font-size:11px; padding:6px 10px; border-radius:6px; cursor:pointer;'>▶ Listen</div>
                     </div>
@@ -923,7 +923,7 @@ async def generate_music(api_token, prompt, custom_mode, style, title, instrumen
             "title": title,
             "customMode": custom_mode,
             "instrumental": instrumental,
-            "model": "V3_5",
+            "model": "V4",
             "callBackUrl": "https://api.example.com/callback"
         }
     else:
@@ -931,7 +931,7 @@ async def generate_music(api_token, prompt, custom_mode, style, title, instrumen
             "prompt": prompt,
             "customMode": custom_mode,
             "instrumental": instrumental,
-            "model": "V3_5",
+            "model": "V4",
             "callBackUrl": "https://api.example.com/callback"
         }
 
