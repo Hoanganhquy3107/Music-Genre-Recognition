@@ -1126,7 +1126,6 @@ def render_game_html():
 
 async def Feel_The_Beat():
     st.title("🎵 Feel The Beat - Tạo Nhạc AI")
-    render_game_html()
     api_token = "2d551602f3a39d8f3e219db2c94d7659"
 
     custom_mode = st.toggle("Custom Mode", value=True)
