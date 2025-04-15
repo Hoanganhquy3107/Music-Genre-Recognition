@@ -1124,61 +1124,82 @@ def render_game_html():
     st.components.v1.html(game_html, height=320)
 
 
-# Phần chính của ứng dụng
 async def Feel_The_Beat():
     st.title("🎵 Feel The Beat - Tạo Nhạc AI")
+    render_game_html()
+    api_token = "2d551602f3a39d8f3e219db2c94d7659"
 
     custom_mode = st.toggle("Custom Mode", value=True)
-    if "lyrics" in st.session_state:
-        lyrics = st.session_state.lyrics
-        prompt = st.text_area("💡 Enter a description of the track you want to create:", 
-                              value=lyrics, 
-                              placeholder="A relaxing piano piece with a gentle melody...",height=300)
-    else:
-        prompt = st.text_area("💡 Enter a description of the track you want to create:", 
-                              placeholder="A relaxing piano piece with a gentle melody...",height=300)
-
     # Kiểm tra nếu custom_mode tắt
     if custom_mode == False:
-        style = "Classical"  # Gán giá trị mặc định nếu custom_mode tắt
-        title = "My AI Music"  # Gán title mặc định nếu custom_mode tắt
-        instrumental = st.checkbox("🎻 Instrumental", value=False)
+        col1, col2 = st.columns([6, 4])
+        with col1:
+            if "lyrics" in st.session_state:
+                lyrics = st.session_state.lyrics
+                prompt = st.text_area("💡 Enter a description of the track you want to create:", 
+                    value=lyrics, placeholder="A relaxing piano piece with a gentle melody...",height=300)
+            else:
+                prompt = st.text_area("💡 Enter a description of the track you want to create:", 
+                    placeholder="A relaxing piano piece with a gentle melody...",height=300)
+            style = "Classical"  # Gán giá trị mặc định nếu custom_mode tắt
+            title = "My AI Music"  # Gán title mặc định nếu custom_mode tắt
+            instrumental = st.checkbox("🎻 Instrumental", value=False)
+        with col2:
+            if "music_data" in st.session_state:
+                music_data = st.session_state["music_data"]
+                st.success(f"🎵 Your music is ready: [{title}]")
+                for audio_url, title, image_url in music_data:
+                    render_music_player(title, audio_url, image_url)
     else:
+        col1, col2 = st.columns([6, 4])
+        with col1:
+            if "lyrics" in st.session_state:
+                lyrics = st.session_state.lyrics
+                prompt = st.text_area("💡 Enter a description of the track you want to create:", 
+                    value=lyrics, placeholder="A relaxing piano piece with a gentle melody...",height=300)
+            else:
+                prompt = st.text_area("💡 Enter a description of the track you want to create:", 
+                    placeholder="A relaxing piano piece with a gentle melody...",height=300)
         # Danh sách gợi ý phong cách nhạc
-        music_styles = ["Classical", "Jazz", "Lo-fi", "Ambient", "Rock"]
+            music_styles = ["Classical", "Jazz", "Lo-fi", "Ambient", "Rock"]
 
-        # Nếu chưa có session_state cho style_list, đặt giá trị mặc định
-        if "style_list" not in st.session_state:
-            st.session_state["style_list"] = []
+            # Nếu chưa có session_state cho style_list, đặt giá trị mặc định
+            if "style_list" not in st.session_state:
+                st.session_state["style_list"] = []
 
-        # Hộp nhập phong cách nhạc (hiển thị danh sách dưới dạng chuỗi)
-        style = st.text_input("🎼 Enter music style:", ", ".join(st.session_state["style_list"]))
+            # Hộp nhập phong cách nhạc (hiển thị danh sách dưới dạng chuỗi)
+            style = st.text_input("🎼 Enter music style:", ", ".join(st.session_state["style_list"]))
 
-        # Đảm bảo style được sử dụng khi gửi yêu cầu
-        style = style if style else "Classical"  # Nếu người dùng không nhập, sử dụng mặc định "Classical"
+            # Đảm bảo style được sử dụng khi gửi yêu cầu
+            style = style if style else "Classical"  # Nếu người dùng không nhập, sử dụng mặc định "Classical"
 
-        # Hiển thị các nút theo hàng ngang
-        cols = st.columns(len(music_styles))
+            # Hiển thị các nút theo hàng ngang
+            cols = st.columns(len(music_styles))
 
-        for i, music in enumerate(music_styles):
-            with cols[i]:
-                if st.button(music, use_container_width=True):
-                    if music in st.session_state["style_list"]:
-                        # Nếu đã có trong danh sách thì xóa đi (bỏ chọn)
-                        st.session_state["style_list"].remove(music)
-                    else:
-                        # Nếu chưa có thì thêm vào danh sách
-                        st.session_state["style_list"].append(music)
-                    
-                    # Cập nhật text box với danh sách mới
-                    st.rerun()  # Cập nhật giao diện ngay lập tức
-
-        title = st.text_input("🎶 Name the song:", "My AI Music")
+            for i, music in enumerate(music_styles):
+                with cols[i]:
+                    if st.button(music, use_container_width=True):
+                        if music in st.session_state["style_list"]:
+                            # Nếu đã có trong danh sách thì xóa đi (bỏ chọn)
+                            st.session_state["style_list"].remove(music)
+                        else:
+                            # Nếu chưa có thì thêm vào danh sách
+                            st.session_state["style_list"].append(music)
+                        
+                        # Cập nhật text box với danh sách mới
+                        st.rerun()  # Cập nhật giao diện ngay lập tức
+        
+            title = st.text_input("🎶 Name the song:", "My AI Music")
+        with col2:
+            if "music_data" in st.session_state:
+                music_data = st.session_state["music_data"]
+                st.success(f"🎵 Your music is ready: [{title}]")
+                for audio_url, title, image_url in music_data:
+                    render_music_player(title, audio_url, image_url)
         instrumental = st.checkbox("🎻 Instrumental", value=False)
-    # Xóa music_data khi người dùng bấm nút
-    # Xóa music_data khi người dùng bấm nút
-
-    if st.button("🎧 Feel The Beat"):
+  
+    feel_the_beat = st.button(f"🎧 Feel The Beat", key=f"feel_the_beat")
+    if feel_the_beat:
         # ✅ Kiểm tra user đã đăng nhập
         if "user" not in st.session_state:
             st.warning("🔐 Bạn cần đăng nhập để sử dụng tính năng này.")
@@ -1211,16 +1232,18 @@ async def Feel_The_Beat():
                     # ✅ Trừ tín dụng nếu nhạc tạo thành công
                     new_credits = current_credits - 25
                     supabase.table("user_credits").update({"credits": new_credits}).eq("id", user_id).execute()
-
-                    st.session_state["music_data"] = music_data
+                    #st.session_state["music_data"] = music_data
                     for audio_url, title, image_url in music_data:
-                        # st.success(f"🎵 Your music is ready: [{title}]")
-                        # render_music_player(title, audio_url, image_url)
                         st.session_state["music_data"] = music_data
+                  # Tải lại trang để hiển thị nhạc mới
                 else:
                     st.warning("⏳ Music not ready after 5 minutes, please try again later!")
+                st.rerun()
             else:
                 st.error("🚨 Error in music generation!")
+
+
+
 
     # Kiểm tra nếu có nhạc đã tạo trong session_state
     if "music_data" in st.session_state:
