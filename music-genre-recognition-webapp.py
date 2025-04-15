@@ -821,6 +821,20 @@ if menu == "Classify":
             librosa.display.specshow(mel_spec, x_axis="time", y_axis='mel', sr=sr)
             plt.margins(0)
             plt.savefig('melspectrogram.png')
+            plt.close()  # Đóng hình để giải phóng bộ nhớ
+
+            # Kiểm tra xem hình ảnh đã được tạo ra thành công
+            if os.path.exists('melspectrogram.png'):
+                st.success("Mel Spectrogram đã được tạo thành công.")
+            else:
+                st.error("Không thể tạo Mel Spectrogram.")
+            from PIL import Image
+            
+            try:
+                img = Image.open('melspectrogram.png')
+                img.show()  # Hiển thị hình ảnh
+            except Exception as e:
+                st.error(f"Lỗi khi mở hình ảnh: {e}")
 
         # Xây dựng mô hình CNN
         def GenreModel(input_shape=(100,200,4), classes=10):
