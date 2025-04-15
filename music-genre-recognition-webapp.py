@@ -615,15 +615,15 @@ if menu == "Home":
 
             slide = f"""
             <div class='swiper-slide'>
-                <div style='background:#1e1e1e; padding:10px; border-radius:12px; width:200px; color:white; font-family:sans-serif;'>
+                <div style='background:#000000; border-radius:20px; width:200px; width:200px; color:white; font-family:sans-serif;'>
                     <div style='position:relative;'>
                         <img src="{image}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 20px; background: #000;" />
                         <div style='position:absolute; top:6px; left:6px; background:#00cc88; color:white; font-size:10px; padding:2px 6px; border-radius:4px;'>v3-5</div>
                         <div style='position:absolute; top:6px; right:6px; background:#333; color:white; font-size:10px; padding:2px 6px; border-radius:4px;'>{mins}:{secs:02}</div>
-                        <div onclick='playTrack("{title}", "{artist}", "{audio}", "{image}")' style='position:absolute; bottom:6px; right:6px; background:#ff7e5f; color:white; font-size:11px; padding:6px 10px; border-radius:6px; cursor:pointer;'>▶ Nghe ngay</div>
+                        <div onclick='playTrack("{title}", "{artist}", "{audio}", "{image}")' style='position:absolute; bottom:6px; right:6px; background:#ff7e5f; color:white; font-size:11px; padding:6px 10px; border-radius:6px; cursor:pointer;'>▶ Listen</div>
                     </div>
-                    <div style='margin-top:8px; font-size:13px; font-weight:bold;'>{title}</div>
-                    <div style='font-size:11px; color:#bbb;'>👤 {artist}</div>
+                    <div style='margin-top:1px; font-size:13px; font-weight:bold;'>&nbsp;{title}</div>
+                    <div style='font-size:11px; padding-bottom:8px; color:#bbb;'>&nbsp;&nbsp;👤 {artist}</div>
                 </div>
             </div>
             """
