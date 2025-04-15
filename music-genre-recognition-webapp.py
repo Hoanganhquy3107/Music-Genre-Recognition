@@ -1356,7 +1356,7 @@ if menu == "Payment":
             text-align: center;
             margin-bottom: 8px;
             font-size: 20px;
-            color: #FF1C3B !important;
+            color: white !important;
         }}
 
         .cost-items {{
