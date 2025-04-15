@@ -1383,7 +1383,7 @@ if menu == "Payment":
                 </div>
             </div>
             <div class="cost-container">
-                <h2>💱 USD → VND Exchange Rate (ExchangeRate-API): {usd_to_vnd:,.0f}</h2>
+                <h2>💱 USD → VND Exchange Rate: {usd_to_vnd:,.0f}</h2>
                 <p>Cost per generation</p>
                 <div class="cost-items">
                     <div class="cost-item">
