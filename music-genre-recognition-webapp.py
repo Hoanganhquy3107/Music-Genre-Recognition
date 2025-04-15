@@ -1314,7 +1314,7 @@ MOMO_CONFIG = {
     "PartnerCode": "MOMO",
     "AccessKey": "F8BBA842ECF85",
     "SecretKey": "K951B6PE1waDMi640xX08PD3vg6EkVlz",
-    "ReturnUrl": "https://aimusic-fvj4bjxfbumlktejiy6gb4.streamlit.app/",
+    "ReturnUrl": "https://music-genre-recognition-347zj019o38.streamlit.app/",
     "IpnUrl": "https://webhook.site/b052aaf4-3be0-43c5-8bad-996d2d0c0e54",
     "RequestType": "captureWallet",
     "ExtraData": "Astronaut_Music_payment"
