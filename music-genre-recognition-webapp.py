@@ -159,9 +159,11 @@ st.markdown(
             font-size: 1.8rem;
             margin-top: 2rem;
             margin-bottom: 1rem;
+            
         }
         h3 {
             font-size: 1.4rem;
+            color: white !important;
         }
         
         /* Button styling */
