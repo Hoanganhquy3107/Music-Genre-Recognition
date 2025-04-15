@@ -573,22 +573,29 @@ def handle_empty_title(music_data):
 
 # =========== TRANG HOME ===========
 if menu == "Home":
-    # Header Animation and Logo
     st.markdown("""
-    <div style="text-align: center; animation: fadeIn 1.5s ease-out;">
-        <div style="font-size: 3rem; font-weight: 800; margin-bottom: 0.5rem; 
+    <div style="text-align: center; margin-bottom: 1rem; animation: fadeIn 1.5s ease-out;">
+        <div style="font-size: 3rem; font-weight: 800; 
                 background: linear-gradient(45deg, #ff7e5f, #feb47b, #ff7e5f);
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
-                padding: 0px;">
+                padding: 10px;">
             ASTRONAUT MUSIC
+        </div>
+        <div style="font-size: 1.5rem; color: rgba(255,255,255,0.8); font-weight: 300">
+            Tạo nhạc và lời bài hát bằng công nghệ AI tiên tiến
         </div>
     </div>
     """, unsafe_allow_html=True)
     
+
     
     # HOT IN APRIL SECTION
-    st.markdown("<h2 style='text-align: left;'>🔥 Bài Hát Hot Trong Tháng 4</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: left; margin-top: 1rem;'>🔥 Bài Hát Hot Trong Tháng 4</h2>", unsafe_allow_html=True)
+
+    public_songs = supabase.table("songs").select("*").eq("is_public", True).order("created_at", desc=True).execute()
+    user_profiles = supabase.table("user_profiles").select("id, full_name").execute()
+    user_map = {u["id"]: u["full_name"] for u in user_profiles.data}
 
     public_songs = supabase.table("songs").select("*").eq("is_public", True).order("created_at", desc=True).execute()
     user_profiles = supabase.table("user_profiles").select("id, full_name").execute()
@@ -607,33 +614,29 @@ if menu == "Home":
             mins, secs = int(duration // 60), int(duration % 60)
 
             slide = f"""
-            <div style='background:#1e1e1e; padding:10px; border-radius:12px; width:200px; color:white; font-family:sans-serif;'>
-            
-                <div style='position:relative;'>
-                    <img src=\"{image}\" style=\"width: 100%; height: 200px; object-fit: cover; border-radius: 20px; background: #000;\" />
-                    <div style='position:absolute; top:6px; left:6px; background:#00cc88; color:white; font-size:10px; padding:2px 6px; border-radius:4px;'>v3-5</div>
-                    <div style='position:absolute; top:6px; right:6px; background:#333; color:white; font-size:10px; padding:2px 6px; border-radius:4px;'>{mins}:{secs:02}</div>
-                    <div onclick='playTrack(\"{title}\", \"{artist}\", \"{audio}\", \"{image}\")' style='position:absolute; bottom:6px; right:6px; background:#ff7e5f; color:white; font-size:11px; padding:6px 10px; border-radius:6px; cursor:pointer;'>▶ Nghe ngay</div>
+            <div class='swiper-slide'>
+                <div style='background:#1e1e1e; padding:10px; border-radius:12px; width:200px; color:white; font-family:sans-serif;'>
+                    <div style='position:relative;'>
+                        <img src="{image}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 20px; background: #000;" />
+                        <div style='position:absolute; top:6px; left:6px; background:#00cc88; color:white; font-size:10px; padding:2px 6px; border-radius:4px;'>v3-5</div>
+                        <div style='position:absolute; top:6px; right:6px; background:#333; color:white; font-size:10px; padding:2px 6px; border-radius:4px;'>{mins}:{secs:02}</div>
+                        <div onclick='playTrack("{title}", "{artist}", "{audio}", "{image}")' style='position:absolute; bottom:6px; right:6px; background:#ff7e5f; color:white; font-size:11px; padding:6px 10px; border-radius:6px; cursor:pointer;'>▶ Nghe ngay</div>
+                    </div>
+                    <div style='margin-top:8px; font-size:13px; font-weight:bold;'>{title}</div>
+                    <div style='font-size:11px; color:#bbb;'>👤 {artist}</div>
                 </div>
-                <div style='margin-top:8px; font-size:13px; font-weight:bold;'>{title}</div>
-                <div style='font-size:11px; color:#bbb;'>👤 {artist}</div>
             </div>
             """
             slides_html += slide
 
-        # Grid & Scrollable container
-        full_html = f"""
-        
-        <div style='display:grid; grid-template-columns: repeat(4, 1fr); gap:16px; max-height:750px; overflow-y:auto; padding:5px;'>
-            {slides_html}
-        </div>
-
+        # Player style & function
+        popup_html = """
         <div id='musicPlayerPopup' style='
             display:none;
             position:fixed;
             bottom:0;
             left:0;
-            width:1000vw;
+            width:100vw;
             background:#181818;
             border-top:1px solid #333;
             box-shadow:0 -2px 10px rgba(0,0,0,0.5);
@@ -679,12 +682,75 @@ if menu == "Home":
         }}
         </script>
         """
+        
+        # Swiper & Player HTML
+        full_html = f"""
 
-        components.html(full_html, height=800)
- 
+        <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css'/>
+        <script src='https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js'></script>
+        <div style='display:grid; grid-template-columns: repeat(4, 1fr); gap:16px; max-height:750px; overflow-y:auto; padding:5px;'>
+                {slides_html}
+        </div>
+  
+
+        {popup_html}
+
+        <script>
+        const swiper = new Swiper('.swiper', {{
+            slidesPerView: 3,
+            spaceBetween: 225,
+            freeMode: true,
+            grabCursor: true,
+            breakpoints: {{
+                640: {{ slidesPerView: 2 }},
+                768: {{ slidesPerView: 3 }},
+                1024: {{ slidesPerView: 5 }},
+                1280: {{ slidesPerView: 7 }},
+            }}
+        }});
+        </script>
+        """
+
+        components.html(full_html, height=850 )
 
     else:
         st.info("🙈 Chưa có bài hát nào được chia sẻ.")
+    # Thẻ thông tin tính năng
+    features_col1, features_col2, features_col3 = st.columns(3)
+    
+    with features_col1:
+        st.markdown("""
+        <div class="custom-container" style="height: 100%; text-align: center; padding: 20px;">
+            <div style="font-size: 48px; margin-bottom: 15px;">✏️</div>
+            <h3 style="margin-bottom: 10px;">Tạo lời bài hát</h3>
+            <p style="color: rgba(255,255,255,0.7);">
+                Dùng AI để viết lời bài hát theo phong cách và cảm xúc bạn mong muốn
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    with features_col2:
+        st.markdown("""
+        <div class="custom-container" style="height: 100%; text-align: center; padding: 20px;">
+            <div style="font-size: 48px; margin-bottom: 15px;">🎵</div>
+            <h3 style="margin-bottom: 10px;">Sáng tạo âm nhạc</h3>
+            <p style="color: rgba(255,255,255,0.7);">
+                Tạo ra các bản nhạc độc đáo với AI theo phong cách riêng của bạn
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    with features_col3:
+        st.markdown("""
+        <div class="custom-container" style="height: 100%; text-align: center; padding: 20px;">
+            <div style="font-size: 48px; margin-bottom: 15px;">🔍</div>
+            <h3 style="margin-bottom: 10px;">Phân tích thể loại</h3>
+            <p style="color: rgba(255,255,255,0.7);">
+                Phân tích và xác định thể loại nhạc từ file âm thanh của bạn
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
 
 
 
