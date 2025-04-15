@@ -685,10 +685,9 @@ if menu == "Home":
         
         # Swiper & Player HTML
         full_html = f"""
-
         <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css'/>
         <script src='https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js'></script>
-        <div style='display:grid; grid-template-columns: repeat(4, 1fr); gap:16px; max-height:750px; overflow-y:auto; padding:5px;'>
+        <div style='display:grid; grid-template-columns: repeat(4, 1fr); gap:16px; max-height:550px; overflow-y:auto; padding:5px;'>
                 {slides_html}
         </div>
   
