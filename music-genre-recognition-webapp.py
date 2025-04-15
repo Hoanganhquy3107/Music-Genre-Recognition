@@ -1142,7 +1142,7 @@ async def Feel_The_Beat():
     if custom_mode == False:
         style = "Classical"  # Gán giá trị mặc định nếu custom_mode tắt
         title = "My AI Music"  # Gán title mặc định nếu custom_mode tắt
-        instrumental = False  # Gán giá trị mặc định cho instrumental nếu custom_mode tắt
+        instrumental = st.checkbox("🎻 Instrumental", value=False)
     else:
         # Danh sách gợi ý phong cách nhạc
         music_styles = ["Classical", "Jazz", "Lo-fi", "Ambient", "Rock"]
