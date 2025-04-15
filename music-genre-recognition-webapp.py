@@ -1089,7 +1089,7 @@ def render_music_player(title, audio_url, image_url):
     
     col1, col2 = st.columns([1, 5])
     with col1:
-        st.image(image_url, width=150)
+        st.image(image_url, width=250)
     with col2:
         st.markdown(f'<div class="song-title">{title}</div>', unsafe_allow_html=True)
         st.audio(audio_url, format="audio/mp3")
